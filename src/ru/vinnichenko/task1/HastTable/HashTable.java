@@ -69,13 +69,14 @@ public class HashTable {
         return res;
     }
 
-    public void put(String key, String val) {
+    public String put(String key, String val) {
         int ind = key.hashCode() % arr.length;
         Pair [] bucket = arr[ind];
         for (Pair p : bucket) {
             if (p.key.equals(key)) {
+                String res = p.val;
                 p.val = val;
-                return;
+                return res;
             }
         }
         sz++;
@@ -83,6 +84,7 @@ public class HashTable {
         System.arraycopy(bucket, 0, arr[ind], 0, bucket.length);
         arr[ind][bucket.length] = new Pair(key, val);
         norm();
+        return  null;
     }
 
     private  void norm() {
