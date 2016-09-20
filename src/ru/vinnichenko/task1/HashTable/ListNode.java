@@ -7,7 +7,8 @@ public class ListNode {
     private String key;
 
     ListNode() {
-        this.prev = this.next = this;
+        this.next = this;
+        this.prev = this;
         this.val = this.key = null;
     }
 
@@ -27,7 +28,7 @@ public class ListNode {
 
     public String remove(String key) {
         ListNode cur = getNode(key);
-        if (cur != null) {
+        if (cur != null && cur.key != null) {
             ListNode curPrev = cur.prev;
             cur.next.prev = cur.next;
             curPrev.next = curPrev;
@@ -47,10 +48,10 @@ public class ListNode {
             newNode.key = key;
             newNode.val = val;
 
-            prev.next = newNode;
-            next.prev = newNode;
             newNode.next = next;
-            newNode.prev = prev;
+            newNode.prev = this;
+            next.prev = newNode;
+            this.next = newNode;
             return null;
         }
     }

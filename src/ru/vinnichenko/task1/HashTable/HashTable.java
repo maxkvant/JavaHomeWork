@@ -2,7 +2,7 @@ package ru.vinnichenko.task1.HashTable;
 import java.math.BigInteger;
 
 public class HashTable {
-    private ListNode[] arr;
+    private ListNode[] lists;
     private int size;
 
     public int size() {
@@ -12,15 +12,15 @@ public class HashTable {
     private HashTable(int reserved) {
         reserved = nextPrime(reserved);
         size = 0;
-        arr = new ListNode[reserved];
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = new ListNode();
+        lists = new ListNode[reserved];
+        for (int i = 0; i < lists.length; i++) {
+            lists[i] = new ListNode();
         }
     }
 
     public void clear() {
         HashTable hashTable = new HashTable(3);
-        arr = hashTable.arr;
+        lists = hashTable.lists;
         size = hashTable.size;
     }
 
@@ -29,7 +29,7 @@ public class HashTable {
     }
 
     public String get(String key) {
-        return  arr[key.hashCode() % arr.length].get(key);
+        return  lists[key.hashCode() % lists.length].get(key);
     }
 
     public boolean contains(String key) {
@@ -37,7 +37,7 @@ public class HashTable {
     }
 
     public String remove(String key) {
-        String res = arr[key.hashCode() % arr.length].remove(key);
+        String res = lists[key.hashCode() % lists.length].remove(key);
         if (res == null) {
             return null;
         }
@@ -46,7 +46,7 @@ public class HashTable {
     }
 
     public String put(String key, String val) {
-        String res = arr[key.hashCode() % arr.length].put(key, val);
+        String res = lists[key.hashCode() % lists.length].put(key, val);
         if (res == null) {
             size++;
             return null;
@@ -55,14 +55,14 @@ public class HashTable {
     }
 
     private  void norm() {
-        if (size > 3 * arr.length) {
-            HashTable hashTable = new HashTable(nextPrime(arr.length * 5));
-            for (ListNode subList : arr) {
+        if (size > 3 * lists.length) {
+            HashTable hashTable = new HashTable(nextPrime(lists.length * 5));
+            for (ListNode subList : lists) {
                 for (ListNode node = subList.next(); node != subList; node = node.next()) {
                     hashTable.put(node.getKey(), node.getVal());
                 }
             }
-            arr = hashTable.arr;
+            lists = hashTable.lists;
             size = hashTable.size;
         }
     }
