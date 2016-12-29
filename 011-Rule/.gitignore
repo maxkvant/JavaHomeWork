@@ -1,0 +1,11 @@
+build
+lib
+gradle
+.idea
+.gradle
+
+build
+*.jar
+*.class
+*.bin
+*.xml
