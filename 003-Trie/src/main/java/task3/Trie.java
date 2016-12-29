@@ -1,17 +1,14 @@
 package task3;
 
-import com.sun.istack.internal.NotNull;
-
 import java.io.*;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class Trie {
-    @NotNull
-    private TrieNode root;
+    private final TrieNode root;
 
     public Trie() {
-        this.root = new TrieNode();
+        root = new TrieNode();
     }
 
     /**
@@ -19,7 +16,10 @@ public class Trie {
      * Returns: was string absent.
      */
 
-    public boolean add(@NotNull String element) {
+    public boolean add(String element) {
+        if (element == null) {
+            throw new IllegalArgumentException();
+        }
         if (!contains(element)) {
             TrieNode vertex = root;
             for (int i = 0; i < element.length(); i++) {
@@ -38,7 +38,10 @@ public class Trie {
      * checks whether a string is present.
      */
 
-    public boolean contains(@NotNull String element) {
+    public boolean contains(String element) {
+        if (element == null) {
+            throw new IllegalArgumentException();
+        }
         TrieNode vertex0 = getNode(element);
         return vertex0 != null && vertex0.isTerminal;
     }
@@ -48,7 +51,10 @@ public class Trie {
      * Returns: was string present.
      */
 
-    public boolean remove(@NotNull String element) {
+    public boolean remove(String element) {
+        if (element == null) {
+            throw new IllegalArgumentException();
+        }
         if (contains(element)) {
             TrieNode vertex = root;
             for (int i = 0; i < element.length(); i++) {
@@ -74,7 +80,10 @@ public class Trie {
      * Returns: how many strings starts with prefix.
      */
 
-    public int howManyStartsWithPrefix(@NotNull String prefix) {
+    public int howManyStartsWithPrefix(String prefix) {
+        if (prefix == null) {
+            throw new IllegalArgumentException();
+        }
         TrieNode vertex0 = getNode(prefix);
         return vertex0 == null ? 0 : vertex0.size;
     }
@@ -84,7 +93,10 @@ public class Trie {
      * @throws IOException
      */
 
-    public void serialize(@NotNull OutputStream out) throws IOException {
+    public void serialize(OutputStream out) throws IOException {
+        if (out == null) {
+            throw new IllegalArgumentException();
+        }
         try(DataOutputStream stream = new DataOutputStream(out)) {
             stream.writeInt(root.size);
             StringBuilder stringBuilder = new StringBuilder();
@@ -98,10 +110,12 @@ public class Trie {
      * @throws IOException
      */
 
-    public void deserialize(@NotNull InputStream in) throws IOException {
+    public void deserialize(InputStream in) throws IOException {
+        if (in == null) {
+            throw new IllegalArgumentException();
+        }
         try(DataInputStream stream = new DataInputStream(in)) {
             int len = stream.readInt();
-            root = new TrieNode();
             for (int i = 0; i < len; i++) {
                 String s = stream.readUTF();
                 add(s);
@@ -109,7 +123,7 @@ public class Trie {
         }
     }
 
-    private TrieNode getNode(@NotNull String element) {
+    private TrieNode getNode(String element) {
         TrieNode v = root;
         for (int i = 0; v != null && i < element.length(); i++) {
             v = v.getNext(element.charAt(i));
@@ -117,9 +131,7 @@ public class Trie {
         return v;
     }
 
-    private void serializeDfs(TrieNode vertex,
-                              StringBuilder curStr,
-                              DataOutputStream stream)
+    private void serializeDfs(TrieNode vertex, StringBuilder curStr, DataOutputStream stream)
             throws IOException, IndexOutOfBoundsException {
         if (vertex == null) {
             return;
@@ -135,16 +147,9 @@ public class Trie {
     }
 
     private static class TrieNode {
-        @NotNull
-        private TreeMap<Character, TrieNode> next;
-        private int size;
-        private boolean isTerminal;
-
-        private TrieNode() {
-            this.size = 0;
-            this.isTerminal = false;
-            this.next = new TreeMap<Character, TrieNode>();
-        }
+        private final TreeMap<Character, TrieNode> next = new TreeMap<>();
+        private int size = 0;
+        private boolean isTerminal = false;
 
         private TrieNode getNext(char c) {
             return next.get(c);

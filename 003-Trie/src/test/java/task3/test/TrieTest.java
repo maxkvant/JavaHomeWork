@@ -1,7 +1,5 @@
 package task3.test;
 
-import junit.framework.AssertionFailedError;
-import org.junit.Assert;
 import task3.Trie;
 
 import java.io.ByteArrayInputStream;
@@ -24,23 +22,23 @@ public class TrieTest {
     @org.junit.Test
     public void sizeTest() throws Exception {
         Trie trie = new Trie();
-        assertEquals(trie.size(), 0);
+        assertEquals(0, trie.size());
         trie.add("abacaba");
-        assertEquals(trie.size(), 1);
+        assertEquals(1, trie.size());
         trie.add("aba");
-        assertEquals(trie.size(), 2);
+        assertEquals(2, trie.size());
         trie.add("abba");
-        assertEquals(trie.size(), 3);
+        assertEquals(3, trie.size());
         trie.add("aba");
-        assertEquals(trie.size(), 3);
+        assertEquals(3, trie.size());
         trie.add("aca");
-        assertEquals(trie.size(), 4);
+        assertEquals(4, trie.size());
         trie.remove("abacaba");
-        assertEquals(trie.size(), 3);
+        assertEquals(3, trie.size());
         trie.remove("aca");
-        assertEquals(trie.size(), 2);
+        assertEquals(2, trie.size());
         trie.add("abacaba");
-        assertEquals(trie.size(), 3);
+        assertEquals(3, trie.size());
     }
 
     @org.junit.Test
@@ -60,14 +58,14 @@ public class TrieTest {
         trie.add("abaa");
         trie.add("abcd");
         trie.add("");
-        assertEquals(trie.howManyStartsWithPrefix(""), 4);
-        assertEquals(trie.howManyStartsWithPrefix("a"), 3);
-        assertEquals(trie.howManyStartsWithPrefix("ab"), 3);
-        assertEquals(trie.howManyStartsWithPrefix("aba"), 2);
-        assertEquals(trie.howManyStartsWithPrefix("abc"), 1);
-        assertEquals(trie.howManyStartsWithPrefix("abcd"), 1);
-        assertEquals(trie.howManyStartsWithPrefix("abcde"), 0);
-        assertEquals(trie.howManyStartsWithPrefix("f"), 0);
+        assertEquals(4, trie.howManyStartsWithPrefix(""));
+        assertEquals(3, trie.howManyStartsWithPrefix("a"));
+        assertEquals(3, trie.howManyStartsWithPrefix("ab"));
+        assertEquals(2, trie.howManyStartsWithPrefix("aba"));
+        assertEquals(1, trie.howManyStartsWithPrefix("abc"));
+        assertEquals(1, trie.howManyStartsWithPrefix("abcd"));
+        assertEquals(0, trie.howManyStartsWithPrefix("abcde"));
+        assertEquals(0, trie.howManyStartsWithPrefix("f"));
     }
 
     @org.junit.Test
@@ -77,9 +75,10 @@ public class TrieTest {
         trie.add("abaa");
         trie.add("abcd");
         trie.add("");
-        ByteArrayOutputStream outstr = new ByteArrayOutputStream(10000);
-        trie.serialize(outstr);
-        trie.deserialize(new ByteArrayInputStream(outstr.toByteArray()));
-        assertEquals(trie.howManyStartsWithPrefix("a"), 3);
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(10000)) {
+            trie.serialize(outputStream);
+            trie.deserialize(new ByteArrayInputStream(outputStream.toByteArray()));
+            assertEquals(3, trie.howManyStartsWithPrefix("a"));
+        }
     }
 }
