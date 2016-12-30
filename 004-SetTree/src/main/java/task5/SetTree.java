@@ -1,8 +1,12 @@
 package task5;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
-import com.sun.org.apache.xml.internal.dtm.ref.DTMDefaultBaseIterators;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * Simple implementation of generic set.
+ * Data structure: unbalanced binary tree.
+ */
 
 public class SetTree<T extends Comparable> {
     private @Nullable Node root;
@@ -52,38 +56,40 @@ public class SetTree<T extends Comparable> {
         }
         int cmp = val.compareTo(v.value);
         if (cmp > 0) {
-            return get(val, v.R);
+            return get(val, v.right);
         }
         if (cmp < 0) {
-            return get(val, v.L);
+            return get(val, v.left);
         }
         return v;
     }
 
     private static class Node<T extends Comparable> {
         private @NotNull T value;
-        private @Nullable Node<T> L;
-        private @Nullable Node<T> R;
+        private @Nullable Node<T> left;
+        private @Nullable Node<T> right;
+
         private Node(@NotNull T value) {
             this.value = value;
-            L = null;
-            R = null;
+            left = null;
+            right = null;
         }
+
         private void add(@NotNull T val) {
             int cmp = val.compareTo(value);
             if (cmp > 0) {
-                if (R == null) {
-                    R = new Node<T>(val);
+                if (right == null) {
+                    right = new Node<T>(val);
                 } else {
-                    R.add(val);
+                    right.add(val);
                 }
             } else {
-                if (L == null) {
-                    L = new Node<T>(val);
+                if (left == null) {
+                    left = new Node<T>(val);
                 } else {
-                    L.add(val);
+                    left.add(val);
                 }
             }
         }
-    };
+    }
 }
