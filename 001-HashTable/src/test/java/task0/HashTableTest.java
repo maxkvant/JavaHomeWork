@@ -1,0 +1,61 @@
+package task0;
+
+import static org.junit.Assert.assertEquals;
+
+public class HashTableTest {
+    @org.junit.Test
+    public void sizePutTest() throws Exception {
+        HashTable hashTable = new HashTable();
+        assertEquals(0, hashTable.size());
+        hashTable.put("1", "2");
+        assertEquals(1, hashTable.size());
+        hashTable.put("1", "3");
+        assertEquals(1, hashTable.size());
+        hashTable.put("a", "b");
+        assertEquals(2, hashTable.size());
+        hashTable.put("e", "f");
+        assertEquals(3, hashTable.size());
+        hashTable.remove("c");
+        assertEquals(3, hashTable.size());
+        hashTable.remove("1");
+        assertEquals(2, hashTable.size());
+        hashTable.clear();
+        assertEquals(0, hashTable.size());
+    }
+
+    @org.junit.Test
+    public void getPutTest() throws Exception {
+        HashTable hashTable = new HashTable();
+        assertEquals(null, hashTable.get("1"));
+        hashTable.put("1", "2");
+        assertEquals("2", hashTable.get("1"));
+        hashTable.put("1", "3");
+        assertEquals("3", hashTable.get("1"));
+        hashTable.put("a", "b");
+        hashTable.put("e", "f");
+        hashTable.remove("1");
+        assertEquals("b", hashTable.get("a"));
+        hashTable.clear();
+        assertEquals(null, hashTable.get("e"));
+    }
+
+    @org.junit.Test
+    public void containsPutTest() throws Exception {
+        HashTable hashTable = new HashTable();
+        assertEquals(false, hashTable.contains("a"));
+        hashTable.put("a", "b");
+        assertEquals(true, hashTable.contains("a"));
+    }
+
+    @org.junit.Test
+    public void bigPutTest() throws Exception {
+        HashTable hashTable = new HashTable();
+        final int n = 10000;
+        for (int i = 0; i < n; i++) {
+            hashTable.put(i + "", (i + 1) + "");
+        }
+        for (int i = 0; i < n; i++) {
+            assertEquals((i + 1) + "", hashTable.get(i + ""));
+        }
+    }
+}
