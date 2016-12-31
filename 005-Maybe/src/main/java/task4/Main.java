@@ -8,9 +8,9 @@ public class Main {
         try(BufferedReader reader = new BufferedReader(new FileReader(new File("input.txt")));
             PrintWriter writer = new PrintWriter("output.txt")) {
             String line;
-            ArrayList<Integer> ints = new ArrayList<Integer>();
+            ArrayList<Integer> ints = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
-                Maybe<Integer> curInt = Maybe.just(tryParse(line)).map(x -> x * x);
+                Maybe<Integer> curInt = new Maybe<>(tryParse(line)).map(x -> x * x);
                 if (curInt.isPresent()) {
                     ints.add(curInt.get());
                 }
@@ -18,9 +18,7 @@ public class Main {
             if (ints.size() == 0) {
                 writer.write("null");
             } else {
-                for (Integer x : ints) {
-                    writer.println(x);
-                }
+                ints.forEach(writer::println);
             }
         }
     }

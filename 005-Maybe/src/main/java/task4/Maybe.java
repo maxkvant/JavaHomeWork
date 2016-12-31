@@ -1,27 +1,30 @@
 package task4;
+
 import java.util.function.Function;
 
+/**
+ *
+ */
 
 public class Maybe<T> {
-    private T stored;
+    private T value;
+
     private Maybe() {}
 
-    private Maybe(T stored1) {
-        if (stored1 != null) {
-            stored = stored1;
-        } else {
-            stored = null;
-        }
+    public Maybe(T value) {
+        this.value = value;
     }
 
     /**
      * creates new Maybe.
-     * if value is null, Maybe stores nothing,
-     * otherwise Maybe stores value.
+     * if value is null, throws
      */
 
     public static <T> Maybe<T> just(T value) {
-        return new Maybe<T>(value);
+        if (value == null) {
+            throw new IllegalArgumentException("can't create just from null");
+        }
+        return new Maybe<>(value);
     }
 
     /**
@@ -29,17 +32,17 @@ public class Maybe<T> {
      */
 
     public static <T> Maybe<T> nothing() {
-        return new Maybe<T>(null);
+        return new Maybe<>(null);
     }
 
     /**
      * returns value, if value is stored,
-     * otherwise throws  MaybeException.
+     * otherwise throws MaybeException.
      */
 
     public T get() throws MaybeException {
-        if (stored != null) {
-            return stored;
+        if (value != null) {
+            return value;
         } else {
             throw new MaybeException("nothing stored");
         }
@@ -51,7 +54,7 @@ public class Maybe<T> {
      */
 
     public boolean isPresent() {
-        return stored != null;
+        return value != null;
     }
 
     /**
@@ -60,7 +63,7 @@ public class Maybe<T> {
      */
 
     public <U> Maybe<U> map(Function<? super T, ? extends U> mapper) {
-        return stored == null ? nothing() : new Maybe<U>(mapper.apply(stored));
+        return value == null ? nothing() : new Maybe<U>(mapper.apply(value));
     }
 
     public static class MaybeException extends Exception {
