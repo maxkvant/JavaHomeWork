@@ -1,9 +1,9 @@
 package task8.test;
 
-import static org.junit.Assert.*;
+import task8.Function1;
+import task8.Function2;
 
-import com.sun.org.apache.xalan.internal.xsltc.dom.StepIterator;
-import task8.*;
+import static org.junit.Assert.assertEquals;
 
 public class Function1Test {
     @org.junit.Test
@@ -20,7 +20,15 @@ public class Function1Test {
                 return Long.valueOf(x) * Long.valueOf(x);
             }
         };
-        assertTrue(longToString.compose(sqr).apply(5).equals("25"));
+        assertEquals("25", longToString.compose(sqr).apply(5));
+        Function2 distance = new Function2<Long, Integer, Integer>() {
+            public Long apply(Integer a, Integer b) {
+                Long la = Long.valueOf(a);
+                Long lb = Long.valueOf(b);
+                return lb * lb + la * la;
+            }
+        };
+        assertEquals("169", longToString.compose(distance).apply(5, 12));
     }
 
 }

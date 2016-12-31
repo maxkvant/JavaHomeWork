@@ -1,6 +1,5 @@
 package task8.test;
 
-import org.omg.PortableInterceptor.INACTIVE;
 import task8.Predicate;
 
 import static org.junit.Assert.*;

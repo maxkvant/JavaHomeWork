@@ -1,11 +1,8 @@
 package task8.test;
 
-import jdk.nashorn.internal.objects.annotations.Function;
-import task8.Function1;
 import task8.Function2;
 
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class Function2Test {
     private final Function2<Integer, Integer, Integer> f = new Function2<Integer, Integer, Integer>() {
