@@ -2,6 +2,6 @@ package task;
 
 import java.util.Set;
 
-public interface HasTopics {
+interface HasTopics {
     Set<String> getTopics();
 }

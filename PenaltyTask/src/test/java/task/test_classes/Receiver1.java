@@ -15,7 +15,5 @@ public class Receiver1 implements BroadcastReceiver {
 
     public void receive(Object message) {
         count[(Integer) message]++;
-
-        System.out.println();
     }
 }

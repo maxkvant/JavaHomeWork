@@ -13,36 +13,47 @@ public class BroadcastCoordinator {
     private final List<Thread> threads = new ArrayList<>();
     private final Map<String, List<BroadcastReceiver> > mapReceivers = new HashMap<>();
     private final Map<String, List<Filter> > mapFilters = new HashMap<>();
+    private boolean running = false;
 
     BroadcastCoordinator() {
         Thread thread = new Thread(new QueueConsumer());
         threads.add(thread);
     }
 
-    public void start() {
+    public synchronized void start() {
+        if (running) {
+            return;
+        }
+        running = true;
         threads.forEach(Thread::start);
     }
 
     public synchronized void shutdown() {
+        running = false;
         threads.forEach(Thread::interrupt);
     }
 
-    public void add(BroadcastSender sender) {
+    public synchronized void add(BroadcastSender sender) {
         final String topic = sender.getTopic();
         sender.setCoordinator((message) -> queue.add(new MarkedMessage(message, topic)));
 
-        synchronized (threads) {
-            Thread thread = new Thread(sender);
-            threads.add(thread);
+        Thread thread = new Thread(sender);
+        threads.add(thread);
+        if (running) {
+            thread.start();
         }
     }
 
     public void add(BroadcastReceiver receiver) {
-        __add(receiver, mapReceivers);
+        synchronized (mapReceivers) {
+            __add(receiver, mapReceivers);
+        }
     }
 
     public void add(Filter filter) {
-        __add(filter, mapFilters);
+        synchronized (mapFilters) {
+            __add(filter, mapFilters);
+        }
     }
 
     private <T extends HasTopics> void __add(T receiver, Map<String, List<T> > map) {

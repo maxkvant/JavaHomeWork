@@ -25,15 +25,15 @@ public class BroadcastLoader extends BroadcastCoordinator {
             ClassLoader classLoader = new URLClassLoader(urls);
 
             try(Stream<Path> paths = Files.walk(Paths.get(pathname)).filter(Files::isRegularFile)) {
+                final String rootPathname = Paths.get(pathname).toString();
+
                 paths.filter(path -> path.toString().endsWith(".class"))
                         .map(Path::toString)
-                        .map(str -> rootPackage + "." +
+                        .map(str -> rootPackage +
                                 str
-                                .substring(pathname.length(), str.length() - ".class".length())
+                                .substring(rootPathname.length() , str.length() - ".class".length())
                                 .replace('/', '.'))
                         .forEach(name -> {
-                                    System.out.println(name);
-
                                     try {
                                         Class<?> clazz = classLoader.loadClass(name);
                                         tryAddSender(clazz);
@@ -47,13 +47,10 @@ public class BroadcastLoader extends BroadcastCoordinator {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }
-
-
 
     void tryAddReceiver(Class<?> clazz) {
         try {
