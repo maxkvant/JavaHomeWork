@@ -7,19 +7,26 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * Class for Coordinator, where you can add BroadcastSenders, BroadcastReceivers, Filters.
+ * BroadcastSenders sends messages, Filters validate them, and BroadcastReceivers receive valid messages.
+ */
 public class BroadcastCoordinator {
     private final int queueCapacity = 1000;
-    private final BlockingQueue<MarkedMessage> queue = new ArrayBlockingQueue<MarkedMessage>(queueCapacity, false);
+    private final BlockingQueue<MarkedMessage> queue = new ArrayBlockingQueue<>(queueCapacity, false);
     private final List<Thread> threads = new ArrayList<>();
     private final Map<String, List<BroadcastReceiver> > mapReceivers = new HashMap<>();
     private final Map<String, List<Filter> > mapFilters = new HashMap<>();
     private boolean running = false;
 
-    BroadcastCoordinator() {
+    public BroadcastCoordinator() {
         Thread thread = new Thread(new QueueConsumer());
         threads.add(thread);
     }
 
+    /**
+     * starts this coordinator (run threads), if not started
+     */
     public synchronized void start() {
         if (running) {
             return;
@@ -28,11 +35,19 @@ public class BroadcastCoordinator {
         threads.forEach(Thread::start);
     }
 
+    /**
+     * interrupts all threads in this coordinator
+     */
     public synchronized void shutdown() {
         running = false;
         threads.forEach(Thread::interrupt);
     }
 
+    /**
+     * adds sender to this coordinator.
+     * if coordinator is running, sender starts immediately,
+     * otherwise sender starts after start of this coordinator
+     */
     public synchronized void add(BroadcastSender sender) {
         final String topic = sender.getTopic();
         sender.setCoordinator((message) -> queue.add(new MarkedMessage(message, topic)));
@@ -44,12 +59,19 @@ public class BroadcastCoordinator {
         }
     }
 
+    /**
+     * adds receiver to this coordinator.
+     */
     public void add(BroadcastReceiver receiver) {
         synchronized (mapReceivers) {
             __add(receiver, mapReceivers);
         }
     }
 
+    /**
+     * adds filter to this coordinator.
+     * receivers won't receive messages, which don't pass this filter.
+     */
     public void add(Filter filter) {
         synchronized (mapFilters) {
             __add(filter, mapFilters);
@@ -58,12 +80,12 @@ public class BroadcastCoordinator {
 
     private <T extends HasTopics> void __add(T receiver, Map<String, List<T> > map) {
         for (String topic : receiver.getTopics()) {
-            map.putIfAbsent(topic, new ArrayList<T>());
+            map.putIfAbsent(topic, new ArrayList<>());
             map.get(topic).add(receiver);
         }
     }
 
-    private class MarkedMessage {
+    private static class MarkedMessage {
         final Object message;
         final String topic;
 

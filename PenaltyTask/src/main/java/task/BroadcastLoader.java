@@ -14,7 +14,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+/**
+ * BroadcastCoordinator which can load classes from folder
+ */
 public class BroadcastLoader extends BroadcastCoordinator {
+    /**
+     * loads Filters, BroadcastReceivers, BroadcastSenders from path pathname.
+     * classes path should be in package rootPackage
+     */
     public void load(String pathname, String rootPackage) {
         try {
             File file = new File(pathname);
@@ -52,7 +59,7 @@ public class BroadcastLoader extends BroadcastCoordinator {
         }
     }
 
-    void tryAddReceiver(Class<?> clazz) {
+    private void tryAddReceiver(Class<?> clazz) {
         try {
             Class<? extends BroadcastReceiver> receiverClass = (Class<? extends BroadcastReceiver>) clazz;
             Constructor[] constructors = receiverClass.getConstructors();
@@ -70,7 +77,7 @@ public class BroadcastLoader extends BroadcastCoordinator {
         }
     }
 
-    void tryAddSender(Class<?> clazz) {
+    private void tryAddSender(Class<?> clazz) {
         try {
             Class<? extends BroadcastSender> receiverClass = (Class<? extends BroadcastSender>) clazz;
             Constructor[] constructors = receiverClass.getConstructors();
@@ -88,7 +95,7 @@ public class BroadcastLoader extends BroadcastCoordinator {
         }
     }
 
-    void tryAddFilter(Class<?> clazz) {
+    private void tryAddFilter(Class<?> clazz) {
         try {
             Class<? extends Filter> receiverClass = (Class<? extends Filter>) clazz;
             Constructor[] constructors = receiverClass.getConstructors();
