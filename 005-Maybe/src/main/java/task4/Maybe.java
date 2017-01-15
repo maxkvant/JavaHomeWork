@@ -3,15 +3,15 @@ package task4;
 import java.util.function.Function;
 
 /**
- *
+ * Container for T value (not null) or null.
+ * Note: create new instances using the methods just, nothing.
  */
 
 public class Maybe<T> {
     private T value;
 
     private Maybe() {}
-
-    public Maybe(T value) {
+    private Maybe(T value) {
         this.value = value;
     }
 

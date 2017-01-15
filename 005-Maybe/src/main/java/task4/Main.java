@@ -10,7 +10,9 @@ public class Main {
             String line;
             ArrayList<Integer> ints = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
-                Maybe<Integer> curInt = new Maybe<>(tryParse(line)).map(x -> x * x);
+                Integer parseResult = tryParse(line);
+                Maybe<Integer> curInt = parseResult == null ? Maybe.nothing() : Maybe.just(parseResult);
+                curInt = curInt.map(x -> x * x);
                 if (curInt.isPresent()) {
                     ints.add(curInt.get());
                 }

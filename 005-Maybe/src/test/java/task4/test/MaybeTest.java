@@ -2,12 +2,13 @@ package task4.test;
 import task4.Maybe;
 import task4.Maybe.MaybeException;
 
+import java.util.IllegalFormatCodePointException;
 import java.util.function.Function;
 
 import static org.junit.Assert.*;
 
 public class MaybeTest {
-    @org.junit.Test(expected = MaybeException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void justTest() throws Exception {
         Maybe<Integer> maybe = Maybe.just(new Integer(1));
         assertEquals((Integer) 1, maybe.get());
@@ -15,7 +16,7 @@ public class MaybeTest {
     }
 
     @org.junit.Test
-    public void nothing() throws Exception {
+    public void nothingTest() throws Exception {
         Function<Integer, String> squareStr = (x) -> String.valueOf(x * x);
         Maybe<Integer> nothing = Maybe.nothing();
         assertFalse(nothing.isPresent());
@@ -23,7 +24,7 @@ public class MaybeTest {
     }
 
     @org.junit.Test(expected = MaybeException.class)
-    public void get() throws Exception {
+    public void getTest() throws Exception {
         Maybe<String> maybe1 = Maybe.just("1");
         assertEquals("1", maybe1.get());
         maybe1 = Maybe.nothing();
@@ -31,7 +32,7 @@ public class MaybeTest {
     }
 
     @org.junit.Test
-    public void isPresent() throws Exception {
+    public void isPresentTest() throws Exception {
         Maybe<Integer> maybe = Maybe.nothing();
         assertFalse(maybe.isPresent());
         Maybe<String> maybe2 = Maybe.just("abacaba");
