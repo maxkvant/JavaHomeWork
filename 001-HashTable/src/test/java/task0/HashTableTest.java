@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 public class HashTableTest {
     @org.junit.Test
-    public void sizePutTest() throws Exception {
+    public void sizePutRemoveTest() throws Exception {
         HashTable hashTable = new HashTable();
         assertEquals(0, hashTable.size());
         hashTable.put("1", "2");
@@ -21,10 +21,12 @@ public class HashTableTest {
         assertEquals(2, hashTable.size());
         hashTable.clear();
         assertEquals(0, hashTable.size());
+        hashTable.put("Hello World", "world");
+        assertEquals(1, hashTable.size());
     }
 
     @org.junit.Test
-    public void getPutTest() throws Exception {
+    public void getPutRemoveTest() throws Exception {
         HashTable hashTable = new HashTable();
         assertEquals(null, hashTable.get("1"));
         hashTable.put("1", "2");
@@ -37,6 +39,8 @@ public class HashTableTest {
         assertEquals("b", hashTable.get("a"));
         hashTable.clear();
         assertEquals(null, hashTable.get("e"));
+        hashTable.put("Hello World!", "world");
+        assertEquals("world", hashTable.get("Hello World!"));
     }
 
     @org.junit.Test
@@ -57,5 +61,25 @@ public class HashTableTest {
         for (int i = 0; i < n; i++) {
             assertEquals((i + 1) + "", hashTable.get(i + ""));
         }
+    }
+
+    @org.junit.Test(expected = IllegalArgumentException.class)
+    public void getExceptionTest() {
+        new HashTable().get(null);
+    }
+
+    @org.junit.Test(expected = IllegalArgumentException.class)
+    public void putExceptionTest() {
+        new HashTable().put(null, "hello, World");
+    }
+
+    @org.junit.Test(expected = IllegalArgumentException.class)
+    public void containsExceptionTest() {
+        new HashTable().contains(null);
+    }
+
+    @org.junit.Test(expected = IllegalArgumentException.class)
+    public void removeExceptionTest() {
+        new HashTable().remove(null);
     }
 }

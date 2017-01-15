@@ -11,7 +11,11 @@ public class HashTable {
     private int size = 0;
 
     public HashTable() {
-        this.clear();
+        final int n = 3;
+        lists = new ListNode[n];
+        for (int i = 0; i < n; i++) {
+            lists[i] = new ListNode();
+        }
     }
 
     /**
@@ -25,9 +29,12 @@ public class HashTable {
      * clears HashTable
      */
     public void clear() {
-        HashTable hashTable = new HashTable(3);
-        lists = hashTable.lists;
-        size = hashTable.size;
+        size = 0;
+        final int n = 3;
+        lists = new ListNode[n];
+        for (int i = 0; i < n; i++) {
+            lists[i] = new ListNode();
+        }
     }
 
     /**
@@ -114,7 +121,7 @@ public class HashTable {
         return BigInteger.valueOf(x).nextProbablePrime().intValue();
     }
 
-    public static class ListNode {
+    private static class ListNode {
         private ListNode prev;
         private ListNode next;
         private String val;
