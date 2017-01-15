@@ -9,7 +9,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 public class BroadcastTest {
     @Test
-    public void TestCoordinator() throws Exception {
+    public void testCoordinator() throws Exception {
         Receiver1.count = new int[3];
 
         BroadcastCoordinator coordinator = new BroadcastCoordinator();
@@ -32,7 +32,7 @@ public class BroadcastTest {
     }
 
     @Test
-    public void TestAddStartShutdown() throws Exception {
+    public void testAddStartShutdown() throws Exception {
         BroadcastCoordinator coordinator = new BroadcastCoordinator();
 
         coordinator.add(new Sender1());
@@ -50,14 +50,14 @@ public class BroadcastTest {
     }
 
     @Test
-    public void TestShutdown() {
+    public void testShutdown() {
         BroadcastCoordinator coordinator = new BroadcastCoordinator();
         coordinator.shutdown();
         coordinator.start();
     }
 
     @Test
-    public void TestLoader() throws Exception {
+    public void testBoadcastLoader() throws Exception {
         Receiver1.count = new int[3];
 
         BroadcastLoader loader = new BroadcastLoader();
