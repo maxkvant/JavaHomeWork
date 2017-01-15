@@ -1,15 +1,21 @@
 package task12;
 
+import junit.framework.AssertionFailedError;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.RuleChain;
 
 public class ThreadsRuleTest {
-    @Rule
-    public ThreadsRule rule = new ThreadsRule();
+    private ThreadsRule threadsRule = new ThreadsRule();
+    private ExpectedException exceptionRule = ExpectedException.none();
 
-    public class MyRunnable implements Runnable {
-        MyRunnable() {
-        }
+    @Rule
+    public RuleChain rules = RuleChain
+            .outerRule(exceptionRule)
+            .around(threadsRule);
+
+    private class MyRunnable implements Runnable {
         public void run() {
             try {
                 Thread.sleep(100);
@@ -20,11 +26,11 @@ public class ThreadsRuleTest {
     }
 
     @Test
-    public void test1() throws InterruptedException {
+    public void testOk() throws InterruptedException {
         Thread thread1 = new Thread(new MyRunnable());
         Thread thread2 = new Thread(new MyRunnable());
-        rule.registerThread(thread1);
-        rule.registerThread(thread2);
+        threadsRule.registerThread(thread1);
+        threadsRule.registerThread(thread2);
         thread1.start();
         thread2.start();
         thread2.join();
@@ -32,9 +38,21 @@ public class ThreadsRuleTest {
     }
 
     @Test
-    public void test2() { //this test should fail
+    public void testThreadNotFinished() {
+        exceptionRule.expect(AssertionFailedError.class);
+        exceptionRule.handleAssertionErrors();
         Thread thread = new Thread(new MyRunnable());
-        rule.registerThread(thread);
+        threadsRule.registerThread(thread);
         thread.start();
+    }
+
+    @Test
+    public void testExceptionInThread() throws InterruptedException {
+        exceptionRule.expect(AssertionError.class);
+        exceptionRule.handleAssertionErrors();
+        Thread thread = new Thread(() -> {throw new RuntimeException();});
+        threadsRule.registerThread(thread);
+        thread.start();
+        thread.join();
     }
 }

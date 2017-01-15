@@ -4,15 +4,16 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static junit.framework.TestCase.assertFalse;
 
 /**
  * Simple junit rule, checks did registered threads die
  */
-
 public class ThreadsRule implements TestRule {
-    private final List<Thread> threads = new ArrayList<Thread>();
+    private final List<Thread> threads = new ArrayList<>();
+    private final Map<Thread, Throwable> throwableMap = new HashMap<>();
 
     @Override
     public Statement apply(final Statement statement, final Description description) {
@@ -20,11 +21,14 @@ public class ThreadsRule implements TestRule {
             @Override
             public void evaluate() throws Throwable {
                 statement.evaluate();
-                System.out.println("after");
                 for (Thread thread : threads) {
-                    if (thread.isAlive()) {
-                        throw new ThreadsRuleException("thread: " + String.valueOf(thread));
+                    Throwable throwableThread = throwableMap.get(thread);
+                    if (throwableThread != null) {
+                        String message = "throwable " + throwableThread + ", in thread " + thread;
+                        throw new AssertionError(message, throwableThread);
                     }
+                    String message = "thread alive: " + thread;
+                    assertFalse(message, thread.isAlive());
                 }
             }
         };
@@ -34,6 +38,14 @@ public class ThreadsRule implements TestRule {
      * register a thread in this rule
      */
     public void registerThread(Thread thread) {
+        thread.setUncaughtExceptionHandler(new ThrowableHandler());
         threads.add(thread);
+    }
+
+    private class ThrowableHandler implements Thread.UncaughtExceptionHandler {
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+            throwableMap.put(t, e);
+        }
     }
 }
