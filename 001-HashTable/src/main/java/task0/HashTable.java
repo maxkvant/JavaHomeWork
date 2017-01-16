@@ -33,10 +33,7 @@ public class HashTable {
      * otherwise returns null
      */
     public String get(String key) {
-        if (key == null) {
-            throw new IllegalArgumentException("key is null");
-        }
-        return  lists[key.hashCode() % lists.length].get(key);
+        return  getList(key).get(key);
     }
 
     /**
@@ -44,9 +41,6 @@ public class HashTable {
      */
 
     public boolean contains(String key) {
-        if (key == null) {
-            throw new IllegalArgumentException("key is null");
-        }
         return get(key) != null;
     }
 
@@ -57,10 +51,7 @@ public class HashTable {
      */
 
     public String remove(String key) {
-        if (key == null) {
-            throw new IllegalArgumentException("key is null");
-        }
-        String res = lists[key.hashCode() % lists.length].remove(key);
+        String res = getList(key).remove(key);
         if (res == null) {
             return null;
         }
@@ -75,17 +66,20 @@ public class HashTable {
      */
 
     public String put(String key, String val) {
-        if (key == null) {
-            throw new IllegalArgumentException("key is null");
-        }
-
-        String res = lists[Math.floorMod(key.hashCode(), lists.length)].put(key, val);
+        String res = getList(key).put(key, val);
         norm();
         if (res == null) {
             size++;
             return null;
         }
         return res;
+    }
+
+    private ListNode getList(String key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key is null");
+        }
+        return lists[Math.floorMod(key.hashCode(), lists.length)];
     }
 
     private void norm() {
