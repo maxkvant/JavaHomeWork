@@ -31,7 +31,7 @@ public class BroadcastLoader extends BroadcastCoordinator {
 
             ClassLoader classLoader = new URLClassLoader(urls);
 
-            try(Stream<Path> paths = Files.walk(Paths.get(pathname)).filter(Files::isRegularFile)) {
+            try (Stream<Path> paths = Files.walk(Paths.get(pathname)).filter(Files::isRegularFile)) {
                 final String rootPathname = Paths.get(pathname).toString();
 
                 paths.filter(path -> path.toString().endsWith(".class"))
@@ -39,7 +39,8 @@ public class BroadcastLoader extends BroadcastCoordinator {
                         .map(str -> rootPackage +
                                 str
                                 .substring(rootPathname.length() , str.length() - ".class".length())
-                                .replace('/', '.'))
+                                .replace('/', '.')
+                                .replace('\\', '.'))
                         .forEach(name -> {
                                     try {
                                         Class<?> clazz = classLoader.loadClass(name);
@@ -73,7 +74,7 @@ public class BroadcastLoader extends BroadcastCoordinator {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            //ignored
         }
     }
 
@@ -91,7 +92,7 @@ public class BroadcastLoader extends BroadcastCoordinator {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            //ignored
         }
     }
 
@@ -109,7 +110,7 @@ public class BroadcastLoader extends BroadcastCoordinator {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            //ignored
         }
     }
 }

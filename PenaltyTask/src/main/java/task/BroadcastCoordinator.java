@@ -62,20 +62,16 @@ public class BroadcastCoordinator {
     /**
      * adds receiver to this coordinator.
      */
-    public void add(BroadcastReceiver receiver) {
-        synchronized (mapReceivers) {
-            __add(receiver, mapReceivers);
-        }
+    public synchronized void add(BroadcastReceiver receiver) {
+        __add(receiver, mapReceivers);
     }
 
     /**
      * adds filter to this coordinator.
      * receivers won't receive messages, which don't pass this filter.
      */
-    public void add(Filter filter) {
-        synchronized (mapFilters) {
-            __add(filter, mapFilters);
-        }
+    public synchronized void add(Filter filter) {
+        __add(filter, mapFilters);
     }
 
     private <T extends HasTopics> void __add(T receiver, Map<String, List<T> > map) {
@@ -103,24 +99,26 @@ public class BroadcastCoordinator {
                     String topic = markedMessage.topic;
                     Object message = markedMessage.message;
 
-                    mapReceivers.putIfAbsent(topic, new ArrayList<>());
-                    mapFilters.putIfAbsent(topic, new ArrayList<>());
+                    synchronized (BroadcastCoordinator.this) {
+                        mapReceivers.putIfAbsent(topic, new ArrayList<>());
+                        mapFilters.putIfAbsent(topic, new ArrayList<>());
 
-                    List<Filter> filters = mapFilters.get(topic);
-                    List<BroadcastReceiver> receivers = mapReceivers.get(topic);
+                        List<Filter> filters = mapFilters.get(topic);
+                        List<BroadcastReceiver> receivers = mapReceivers.get(topic);
 
-                    boolean pass = true;
-                    for (Filter filter : filters) {
-                        pass &= filter.filter(message);
-                    }
-                    if (pass) {
-                        for (BroadcastReceiver receiver : receivers) {
-                            receiver.receive(message);
+                        boolean pass = true;
+                        for (Filter filter : filters) {
+                            pass &= filter.filter(message);
+                        }
+                        if (pass) {
+                            for (BroadcastReceiver receiver : receivers) {
+                                receiver.receive(message);
+                            }
                         }
                     }
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                //ignored
             }
         }
     }
