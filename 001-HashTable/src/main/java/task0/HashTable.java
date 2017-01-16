@@ -8,14 +8,10 @@ import java.math.BigInteger;
 
 public class HashTable {
     private ListNode[] lists;
-    private int size = 0;
+    private int size;
 
     public HashTable() {
-        final int n = 3;
-        lists = new ListNode[n];
-        for (int i = 0; i < n; i++) {
-            lists[i] = new ListNode();
-        }
+        __init(3);
     }
 
     /**
@@ -29,12 +25,7 @@ public class HashTable {
      * clears HashTable
      */
     public void clear() {
-        size = 0;
-        final int n = 3;
-        lists = new ListNode[n];
-        for (int i = 0; i < n; i++) {
-            lists[i] = new ListNode();
-        }
+        __init(3);
     }
 
     /**
@@ -87,7 +78,8 @@ public class HashTable {
         if (key == null) {
             throw new IllegalArgumentException("key is null");
         }
-        String res = lists[key.hashCode() % lists.length].put(key, val);
+
+        String res = lists[Math.floorMod(key.hashCode(), lists.length)].put(key, val);
         norm();
         if (res == null) {
             size++;
@@ -109,12 +101,17 @@ public class HashTable {
         }
     }
 
-    private HashTable(int reserved) {
-        reserved = nextPrime(reserved);
+    private void __init(int reserved) {
+        size = 0;
         lists = new ListNode[reserved];
         for (int i = 0; i < lists.length; i++) {
             lists[i] = new ListNode();
         }
+    }
+
+    private HashTable(int reserved) {
+        reserved = nextPrime(reserved);
+        __init(reserved);
     }
 
     private int nextPrime(int x) {

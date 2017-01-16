@@ -21,7 +21,7 @@ public class HashTableTest {
         assertEquals(2, hashTable.size());
         hashTable.clear();
         assertEquals(0, hashTable.size());
-        hashTable.put("Hello World", "world");
+        hashTable.put("Hello, world", "world");
         assertEquals(1, hashTable.size());
     }
 
